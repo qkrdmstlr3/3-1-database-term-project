@@ -4,7 +4,7 @@
   "description": "> 3학년 1학기 데이터베이스 term project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/qkrdmstlr3/3-1-database-term-project/issues"
   },
-  "homepage": "https://github.com/qkrdmstlr3/3-1-database-term-project#readme"
+  "homepage": "https://github.com/qkrdmstlr3/3-1-database-term-project#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.3.0",
+    "pug": "^3.0.2"
+  }
 }
