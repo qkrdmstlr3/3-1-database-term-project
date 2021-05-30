@@ -4,7 +4,9 @@
   "description": "> 3학년 1학기 데이터베이스 term project",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "css": "node-sass -r public/styles -o public/css --output-style compressed",
+    "server": "nodemon --exec babel-node index.js",
+    "start": "concurrently \"npm run css\" \"npm run server\""
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,13 @@
   },
   "homepage": "https://github.com/qkrdmstlr3/3-1-database-term-project#readme",
   "dependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/node": "^7.14.2",
+    "@babel/preset-env": "^7.14.4",
+    "babel-node": "^0.0.1-security",
+    "concurrently": "^6.2.0",
     "express": "^4.17.1",
+    "node-sass": "^6.0.0",
     "nodemon": "^2.0.7",
     "prettier": "^2.3.0",
     "pug": "^3.0.2"
