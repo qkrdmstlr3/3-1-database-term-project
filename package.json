@@ -1,0 +1,20 @@
+{
+  "name": "db-term-project",
+  "version": "1.0.0",
+  "description": "> 3학년 1학기 데이터베이스 term project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qkrdmstlr3/3-1-database-term-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qkrdmstlr3/3-1-database-term-project/issues"
+  },
+  "homepage": "https://github.com/qkrdmstlr3/3-1-database-term-project#readme"
+}
