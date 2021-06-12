@@ -1,12 +1,11 @@
-import { RenderType, EventFuncType } from './type';
-import { observe, disObserve } from './state';
+import { observe, disObserve } from './state.js';
 
 class ShellHTML extends HTMLElement {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: any;
-  events: EventFuncType[] | undefined;
+  state;
+  events;
 
-  constructor(state: unknown = null) {
+  constructor(state = null) {
     super();
     this.state = state; // TODO: immutability must be guaranteed
 
@@ -18,7 +17,7 @@ class ShellHTML extends HTMLElement {
     }
   }
 
-  disconnectedCallback(): void {
+  disconnectedCallback() {
     this.removeEvents();
   }
 
@@ -30,15 +29,11 @@ class ShellHTML extends HTMLElement {
    * reflow or repaint may occur
    * need to change the way which compare each node of the tree.
    */
-  compareAndReplaceNodeTree(
-    oldDOM: ShadowRoot,
-    newDOM: HTMLDivElement,
-    newDOMChilds: NodeListOf<ChildNode>
-  ): void {
+  compareAndReplaceNodeTree(oldDOM, newDOM, newDOMChilds) {
     if (!newDOMChilds.length) return;
 
     for (let i = 0; i < newDOMChilds.length; i += 1) {
-      const newDOMChild = newDOMChilds[i] as HTMLElement;
+      const newDOMChild = newDOMChilds[i];
 
       if (newDOMChild.nodeName.includes('-')) {
         const oldDOMElement = oldDOM.getElementById(newDOMChild.id);
@@ -54,7 +49,7 @@ class ShellHTML extends HTMLElement {
   /**
    * state
    */
-  setState(state: unknown): void {
+  setState(state) {
     if (this.state !== state) {
       this.state = state;
 
@@ -62,32 +57,29 @@ class ShellHTML extends HTMLElement {
     }
   }
 
-  getElement(id: string): HTMLElement | null {
+  getElement(id) {
     if (this.shadowRoot) {
       return this.shadowRoot.getElementById(id);
     }
     return null;
   }
 
-  enrollObserving(key: string): void {
+  enrollObserving(key) {
     observe(key, this, this.rerender);
   }
 
-  releaseObserving(key: string): void {
+  releaseObserving(key) {
     disObserve(key, this);
   }
 
   /**
    * Rendering
    */
-  render(): RenderType | void {
+  render() {
     // overriding
   }
 
-  renderFirst(
-    { html = '', eventFuncs = [], css }: RenderType,
-    dom: ShadowRoot
-  ): void {
+  renderFirst({ html = '', eventFuncs = [], css }, dom) {
     // FIXME: applying sanitize html
     dom.innerHTML = html.trim().replace(/>[ |\n]*</g, '><');
 
@@ -100,13 +92,13 @@ class ShellHTML extends HTMLElement {
     eventFuncs.forEach((eventFunc) => this.eventDelegation(eventFunc, dom));
   }
 
-  renderCSS(css: string, dom: ShadowRoot): void {
+  renderCSS(css, dom) {
     const style = document.createElement('style');
     style.appendChild(document.createTextNode(css));
     dom.appendChild(style);
   }
 
-  getEventListner(event: Event, { className, func }: EventFuncType): void {
+  getEventListner(event, { className, func }) {
     event.stopPropagation();
     const isCorrectElement =
       (event.target instanceof HTMLElement ||
@@ -118,26 +110,23 @@ class ShellHTML extends HTMLElement {
     }
   }
 
-  eventDelegation(
-    { className, func, type }: EventFuncType,
-    dom: ShadowRoot
-  ): void {
-    dom.addEventListener(type, (event: Event) =>
+  eventDelegation({ className, func, type }, dom) {
+    dom.addEventListener(type, (event) =>
       this.getEventListner(event, { className, func, type })
     );
   }
 
-  removeEvents(): void {
+  removeEvents() {
     if (!this.events) return;
 
     this.events.forEach(({ className, func, type }) => {
-      this.shadowRoot?.removeEventListener(type, (event: Event) =>
+      this.shadowRoot?.removeEventListener(type, (event) =>
         this.getEventListner(event, { className, func, type })
       );
     });
   }
 
-  rerender(): void {
+  rerender() {
     const element = this.render();
 
     if (element && element.html) {
