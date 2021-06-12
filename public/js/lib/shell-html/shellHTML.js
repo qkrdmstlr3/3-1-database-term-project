@@ -9,11 +9,10 @@ class ShellHTML extends HTMLElement {
     super();
     this.state = state; // TODO: immutability must be guaranteed
 
-    this.attachShadow({ mode: 'open' });
     const element = this.render();
 
-    if (element && this.shadowRoot) {
-      this.renderFirst(element, this.shadowRoot);
+    if (element) {
+      this.renderFirst(element, this);
     }
   }
 
@@ -58,10 +57,7 @@ class ShellHTML extends HTMLElement {
   }
 
   getElement(id) {
-    if (this.shadowRoot) {
-      return this.shadowRoot.getElementById(id);
-    }
-    return null;
+    return this.getElementById(id);
   }
 
   enrollObserving(key) {
@@ -87,7 +83,6 @@ class ShellHTML extends HTMLElement {
       this.renderCSS(css, dom);
     }
 
-    // ShadowRoot Event Delegation
     this.events = eventFuncs;
     eventFuncs.forEach((eventFunc) => this.eventDelegation(eventFunc, dom));
   }
@@ -120,7 +115,7 @@ class ShellHTML extends HTMLElement {
     if (!this.events) return;
 
     this.events.forEach(({ className, func, type }) => {
-      this.shadowRoot?.removeEventListener(type, (event) =>
+      this.removeEventListener(type, (event) =>
         this.getEventListner(event, { className, func, type })
       );
     });
@@ -130,7 +125,7 @@ class ShellHTML extends HTMLElement {
     const element = this.render();
 
     if (element && element.html) {
-      const oldDOM = this.shadowRoot;
+      const oldDOM = this;
       const newDOM = document.createElement('div');
       newDOM.innerHTML = element.html.trim().replace(/>[ |\n]*</g, '><');
 

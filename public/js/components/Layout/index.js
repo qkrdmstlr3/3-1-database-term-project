@@ -1,9 +1,14 @@
 import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
+// import styleSheet from './style.css';
 
 class LayoutMain extends ShellHTML {
   render() {
     return {
-      html: `<div>hello</div>`,
+      html: `
+        <main>
+          <header>LIBRARY</header>
+        </main>`,
+      // css: styleSheet,
     };
   }
 }
