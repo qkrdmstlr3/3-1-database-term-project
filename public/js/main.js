@@ -5,5 +5,6 @@ import { render } from './lib/shell-html/index.js';
 import './components/Layout/index.js';
 import './components/Sidebar/index.js';
 import './components/Main/index.js';
+import './components/Books/index.js';
 
 render('layout-component', document.getElementById('root'));

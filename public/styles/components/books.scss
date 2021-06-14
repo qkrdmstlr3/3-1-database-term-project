@@ -1,0 +1,54 @@
+.books {
+  margin-top: 2rem;
+
+  &__input {
+    display: block;
+    width: 92%;
+    height: 1.8rem;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+  }
+
+  &__item {
+    width: 30%;
+    display: flex;
+    margin-bottom: 6rem;
+
+    &__left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-right: 20px;
+
+      &-image {
+        width: 100%;
+        height: 80%;
+
+        border-radius: 3px;
+        background-color: #333;
+      }
+
+      &-button {
+        width: 5rem;
+        cursor: pointer;
+      }
+    }
+
+    &__right {
+      display: flex;
+      flex-direction: column;
+
+      span {
+        margin: 7px 0;
+      }
+    }
+  }
+}
