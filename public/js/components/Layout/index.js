@@ -1,16 +1,18 @@
 import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
-// import styleSheet from './style.css';
 
 class LayoutMain extends ShellHTML {
   render() {
     return {
       html: `
-        <main>
-          <header>LIBRARY</header>
+        <main class="layout">
+          <header class="layout__header">LIBRARY</header>
+          <div class="layout__main">
+            <sidebar-component id="sidebar"></sidebar-component>
+            <main-component id="main"></main-component>
+          </div>
         </main>`,
-      // css: styleSheet,
     };
   }
 }
 
-createComponent('layout-main', LayoutMain);
+createComponent('layout-component', LayoutMain);

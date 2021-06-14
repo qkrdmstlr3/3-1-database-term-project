@@ -1,0 +1,16 @@
+.layout {
+  &__header {
+    font-weight: bold;
+    font-size: 4rem;
+
+    text-align: center;
+    cursor: pointer;
+  }
+
+  &__main {
+    margin: 0 auto;
+    width: 70%;
+    height: 100%;
+    display: flex;
+  }
+}

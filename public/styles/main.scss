@@ -1,4 +1,6 @@
-@import 'layout.scss';
+@import 'components/layout.scss';
+@import 'components/main.scss';
+@import 'components/sidebar.scss';
 
 body {
   background-color: #eee;
