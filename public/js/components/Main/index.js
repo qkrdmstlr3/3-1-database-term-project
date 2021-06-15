@@ -1,6 +1,6 @@
 import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
 
-const isbookspage = true;
+const isbookspage = false;
 
 class MainComponent extends ShellHTML {
   render() {

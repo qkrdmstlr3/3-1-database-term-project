@@ -1,0 +1,67 @@
+.mypage {
+  &__tab {
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 1.5rem;
+
+    button {
+      width: 50%;
+      height: 2rem;
+
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #3897db;
+      background-color: white;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+  }
+
+  &__item {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 3rem 0;
+
+    &__left,
+    &__center {
+      display: flex;
+
+      &-image {
+        width: 80px;
+        height: 125px;
+        margin-right: 10px;
+
+        border-radius: 3px;
+        background-color: #333;
+      }
+
+      &__info {
+        display: flex;
+        flex-direction: column;
+
+        span {
+          margin: 7px 0;
+        }
+      }
+    }
+
+    &__right {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      button {
+        margin: 7px 0;
+      }
+    }
+  }
+
+  &-choosed {
+    color: white !important;
+    background-color: #3897db !important;
+  }
+}

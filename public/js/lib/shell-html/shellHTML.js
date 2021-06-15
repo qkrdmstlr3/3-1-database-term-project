@@ -129,7 +129,7 @@ class ShellHTML extends HTMLElement {
       const newDOM = document.createElement('div');
       newDOM.innerHTML = element.html.trim().replace(/>[ |\n]*</g, '><');
 
-      if (!oldDOM || oldDOM.textContent == newDOM.textContent) return;
+      if (!oldDOM || oldDOM.innerHTML == newDOM.innerHTML) return;
       this.compareAndReplaceNodeTree(oldDOM, newDOM, newDOM.childNodes);
       oldDOM.childNodes[0]?.replaceWith(newDOM.childNodes[0]);
     }
