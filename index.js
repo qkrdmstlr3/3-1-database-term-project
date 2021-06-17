@@ -4,6 +4,7 @@ const path = require('path');
 
 // Routes
 const bookRouter = require('./src/routes/book');
+const customerRouter = require('./src/routes/customer');
 
 const PORT = 3000;
 
@@ -19,5 +20,6 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 app.use('/book', bookRouter);
+app.use('/customer', customerRouter);
 
 app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
