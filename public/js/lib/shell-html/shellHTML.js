@@ -35,10 +35,12 @@ class ShellHTML extends HTMLElement {
       const newDOMChild = newDOMChilds[i];
 
       if (newDOMChild.nodeName.includes('-')) {
-        const oldDOMElement = oldDOM.getElementById(newDOMChild.id);
-        if (oldDOMElement) {
-          newDOMChild.replaceWith(oldDOMElement);
-        }
+        try {
+          const oldDOMElement = oldDOM?.getElementById(newDOMChild.id);
+          if (oldDOMElement) {
+            newDOMChild.replaceWith(oldDOMElement);
+          }
+        } catch (e) {}
       }
 
       this.compareAndReplaceNodeTree(oldDOM, newDOM, newDOMChild.childNodes);

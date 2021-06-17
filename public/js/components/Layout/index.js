@@ -1,6 +1,14 @@
-import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
+import {
+  ShellHTML,
+  createComponent,
+  setGlobalState,
+} from '../../lib/shell-html/index.js';
 
 class LayoutMain extends ShellHTML {
+  titleClickHandler() {
+    setGlobalState('page', 'books');
+  }
+
   render() {
     return {
       html: `
@@ -11,6 +19,13 @@ class LayoutMain extends ShellHTML {
             <main-component id="main"></main-component>
           </div>
         </main>`,
+      eventFuncs: [
+        {
+          className: 'layout__header',
+          func: this.titleClickHandler,
+          type: 'click',
+        },
+      ],
     };
   }
 }

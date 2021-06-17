@@ -1,5 +1,6 @@
 // Dependencies
 import { render } from './lib/shell-html/index.js';
+import './lib/state.js';
 
 // Components
 import './components/Layout/index.js';

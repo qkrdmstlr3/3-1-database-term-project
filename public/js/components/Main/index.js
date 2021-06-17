@@ -1,9 +1,22 @@
-import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
-
-const isbookspage = false;
+import {
+  ShellHTML,
+  createComponent,
+  useGlobalState,
+} from '../../lib/shell-html/index.js';
 
 class MainComponent extends ShellHTML {
+  connectedCallback() {
+    this.enrollObserving('page');
+  }
+
+  disconnectedCallback() {
+    this.releaseObserving('page');
+  }
+
   render() {
+    const page = useGlobalState('page');
+    const isbookspage = page === 'books';
+
     return {
       html: `
         <div class="main">

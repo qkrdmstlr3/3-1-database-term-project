@@ -1,8 +1,16 @@
-import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
+import {
+  ShellHTML,
+  createComponent,
+  setGlobalState,
+} from '../../lib/shell-html/index.js';
 
-const isLogged = false;
+const isLogged = true;
 
 class SidebarComponent extends ShellHTML {
+  myPageButtonClickHandler() {
+    setGlobalState('page', 'mypage');
+  }
+
   render() {
     const loginHTML = `
       <div class="sidebar__top">
@@ -25,7 +33,7 @@ class SidebarComponent extends ShellHTML {
         <h2>PROFILE</h2>
         <image class="sidebar__image" src="https://avatars.githubusercontent.com/u/26402298?s=400&u=d9afa2bb4eb8708b054cc208fd951be1862a03ca&v=4" />
         <span class="sidebar__name">유저명</span>
-        <button class="sidebar__button">마이페이지</button>
+        <button class="sidebar__mypage__button">마이페이지</button>
         <button class="sidebar__button">로그아웃</button>
       </div>
       <button class="sidebar__button sidebar__statistic">통계정보</button>
@@ -36,6 +44,13 @@ class SidebarComponent extends ShellHTML {
         <div class="sidebar">
           ${isLogged ? profileHTML : loginHTML}
         </div>`,
+      eventFuncs: [
+        {
+          className: 'sidebar__mypage__button',
+          func: this.myPageButtonClickHandler,
+          type: 'click',
+        },
+      ],
     };
   }
 }

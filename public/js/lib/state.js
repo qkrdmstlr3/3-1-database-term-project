@@ -1,24 +1,6 @@
-// import { state } from '@Lib/shell-html';
+import { state } from './shell-html/index.js';
 
-// state({
-//   key: 'page',
-//   initial: 'home',
-// });
-
-// state({
-//   key: 'checklist',
-//   initial: [],
-// });
-
-// state({
-//   key: 'checkpostControl',
-//   initial: {
-//     currentCheckListId: undefined,
-//     currentCheckPostId: undefined,
-//   },
-// });
-
-// state({
-//   key: 'checkposts',
-//   initial: [],
-// });
+state({
+  key: 'page',
+  initial: 'books',
+});
