@@ -1,8 +1,9 @@
 const { initDB } = require('../db/init');
 
 const signinCustomer = async ({ username, password }) => {
-  const [result] = await initDB("select * from customer where name=:username", [username]);
-
+  const { data } = await initDB("select * from customer where name=:username", [username]);
+  const result = data[0];
+  
   if (!result || !result.length) {
     return { error: '존재하지 않는 계정입니다' };
   }

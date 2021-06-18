@@ -36,7 +36,7 @@
         background-color: #333;
       }
 
-      &-button {
+      button {
         width: 5rem;
         cursor: pointer;
       }
@@ -50,5 +50,9 @@
         margin: 7px 0;
       }
     }
+  }
+
+  &-disable {
+    opacity: 0.5;
   }
 }

@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, './public/js')));
 app.get('/', (req, res) => {
   res.render('index');
 });
-app.use('/book', bookRouter);
+app.use('/ebook', bookRouter);
 app.use('/customer', customerRouter);
 
 app.listen(PORT, () => {

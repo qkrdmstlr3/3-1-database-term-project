@@ -1,11 +1,14 @@
 const request = async ({ method, params = '', data = '' }) => {
-  const response = await fetch(params, {
-    method: 'POST',
-    headers: {
+  const config = { method }
+
+  if (method !== 'get') {
+    config.body = JSON.stringify(data);
+    config.headers = {
       'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(data)
-  });
+    };
+  }
+
+  const response = await fetch(params, config);
   return response.json();
 };
 

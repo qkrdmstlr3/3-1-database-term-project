@@ -1,20 +1,38 @@
 import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
+import { getAllBookAPI } from '../../api/book.js';
 
 class BooksComponent extends ShellHTML {
+  constructor() {
+    super([]);
+  }
+
+  connectedCallback() {
+    this.getAllBooks();
+  }
+
+  async getAllBooks() {
+    const books = await getAllBookAPI();
+    console.log(books);
+    
+    this.setState(books);
+  }
+
   getBooksHTML() {
-    return dummyBooks.reduce(
+    return this.state.reduce(
       (acc, cur) =>
         (acc += `
-      <li class="books__item">
+      <li class="books__item ${cur.cno ? 'books-disable': ''}">
         <div class="books__item__left">
           <div class="books__item__left-image"></div>
-          <button class="books__item__left-button">대여하기</button>
+          ${cur.cno 
+            ? '<button>대여불가</button>'
+            : '<button>대여하기</button>'}
         </div>
         <div class="books__item__right">
           <span>제목 : ${cur.title}</span>
-          <span>저자 : ${cur.authors}</span>
           <span>출판사 : ${cur.publisher}</span>
-          <span>발행연도 : ${cur.year}</span>
+          <span>저자 : ${cur.author}</span>
+          <span>발행연도 : ${cur.year.slice(0, 4)}</span>
         </div>
       </li>
     `),
@@ -23,6 +41,7 @@ class BooksComponent extends ShellHTML {
   }
 
   render() {
+
     return {
       html: `
         <div class="books">
@@ -37,42 +56,3 @@ class BooksComponent extends ShellHTML {
 }
 
 createComponent('books-component', BooksComponent);
-
-const dummyBooks = [
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-];

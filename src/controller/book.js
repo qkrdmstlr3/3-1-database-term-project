@@ -1,9 +1,10 @@
 const bookService = require('../service/book');
+const control = require('../utils/controller');
 
-const getAllBooks = (req, res) => {
-  const result = bookService.getAllBooks();
+const getAllBooks = async (req, res) => {
+  const { status, result } = await control(bookService.getAllBooks);
 
-  return res.status(200).json(result);
+  return res.status(status).json(result);
 };
 
 const getSearchedBooks = (req, res) => {

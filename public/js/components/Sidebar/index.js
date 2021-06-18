@@ -34,13 +34,49 @@ class SidebarComponent extends ShellHTML {
     setGlobalState('customer', { name: undefined });
   }
 
+  getLoginHTML() {
+    return `
+    <div class="sidebar__top">
+      <h2>LOGIN</h2>
+      <input 
+        id="sidebar__username"
+        class="sidebar__input"
+        placeholder="Username"
+        value="kim"
+        type="text"
+      />
+      <input 
+        id="sidebar__password"
+        class="sidebar__input"
+        placeholder="Password"
+        value="0000"
+        type="password"
+      />
+      <button class="sidebar__button sidebar__signin__button">login</button>
+    </div>
+    `;
+  }
+
+  getProfileHTML(name) {
+    return `
+    <div class="sidebar__top">
+      <h2>PROFILE</h2>
+      <image class="sidebar__image" src="https://avatars.githubusercontent.com/u/26402298?s=400&u=d9afa2bb4eb8708b054cc208fd951be1862a03ca&v=4" />
+      <span class="sidebar__name">${name}</span>
+      <button class="sidebar__mypage__button">마이페이지</button>
+      <button class="sidebar__button sidebar__statistic">통계정보</button>
+      <button class="sidebar__button sidebar__signout">로그아웃</button>
+    </div>
+    `;
+  }
+
   render() {
     const { name } = useGlobalState('customer');
 
     return {
       html: `
         <div class="sidebar">
-          ${name ? profileHTML : loginHTML}
+          ${name ? this.getProfileHTML(name) : this.getLoginHTML()}
         </div>`,
       eventFuncs: [
         {
@@ -62,38 +98,6 @@ class SidebarComponent extends ShellHTML {
     };
   }
 }
-
-const loginHTML = `
-  <div class="sidebar__top">
-    <h2>LOGIN</h2>
-    <input 
-      id="sidebar__username"
-      class="sidebar__input"
-      placeholder="Username"
-      value="kim"
-      type="text"
-    />
-    <input 
-      id="sidebar__password"
-      class="sidebar__input"
-      placeholder="Password"
-      value="0000"
-      type="password"
-    />
-    <button class="sidebar__button sidebar__signin__button">login</button>
-  </div>
-`;
-
-const profileHTML = `
-  <div class="sidebar__top">
-    <h2>PROFILE</h2>
-    <image class="sidebar__image" src="https://avatars.githubusercontent.com/u/26402298?s=400&u=d9afa2bb4eb8708b054cc208fd951be1862a03ca&v=4" />
-    <span class="sidebar__name">유저명</span>
-    <button class="sidebar__mypage__button">마이페이지</button>
-    <button class="sidebar__button sidebar__signout">로그아웃</button>
-  </div>
-  <button class="sidebar__button sidebar__statistic">통계정보</button>
-`;
 
 createComponent('sidebar-component', SidebarComponent);
 
