@@ -1,9 +1,10 @@
 const customerService = require('../service/customer');
+const control = require('../utils/controller');
 
-const signinCustomer = (req, res) => {
-  const result = customerService.signinCustomer();
+const signinCustomer = async (req, res) => {
+  const { status, result } = await control(customerService.signinCustomer, req.body);
 
-  return res.send(200).json(result);
+  return res.status(status).json(result);
 };
 
 module.exports = {
