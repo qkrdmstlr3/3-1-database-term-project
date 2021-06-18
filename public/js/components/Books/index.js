@@ -1,5 +1,5 @@
 import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
-import { getAllBookAPI } from '../../api/book.js';
+import { getAllBookAPI, searchBooksAPI } from '../../api/book.js';
 
 class BooksComponent extends ShellHTML {
   constructor() {
@@ -12,8 +12,19 @@ class BooksComponent extends ShellHTML {
 
   async getAllBooks() {
     const books = await getAllBookAPI();
-    console.log(books);
     
+    this.setState(books);
+  }
+
+  async searchHandler(event) {
+    event.preventDefault();
+
+    const input = document.getElementById('books__input');
+    const books = await searchBooksAPI(input.value);
+    
+    if (books.error) {
+      return window.alert('잘못된 검색입니다.');
+    }
     this.setState(books);
   }
 
@@ -41,16 +52,24 @@ class BooksComponent extends ShellHTML {
   }
 
   render() {
-
     return {
       html: `
         <div class="books">
-          <input class="books__input" placeholder="검색" />
+          <form class="books__form">
+            <input id="books__input" class="books__input" placeholder="도서명:책제목 | 저자명:작가이름 | 출판사:출판사 | 발행년도:시작:끝" />
+          </form>
           <ul class="books__list">
             ${this.getBooksHTML()}
           </ul>
         </div>
       `,
+      eventFuncs: [
+        {
+          className: 'books__form',
+          func: this.searchHandler,
+          type: 'submit'
+        }
+      ]
     };
   }
 }

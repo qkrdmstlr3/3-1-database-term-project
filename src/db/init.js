@@ -13,7 +13,10 @@ function initDB(query, condition = []) {
           if (err) {
               rej(err.message);
           }
-          res({ data: result.rows, attr: result.metaData }); 
+          if (result) {
+            res({ data: result.rows, attr: result.metaData }); 
+          }
+          rej('error');
         });
       } catch(error) {
         rej(error);

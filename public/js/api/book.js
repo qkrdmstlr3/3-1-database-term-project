@@ -12,3 +12,16 @@ export const getAllBookAPI = async () => {
     return false;
   }
 }
+
+export const searchBooksAPI = async (condition) => {
+  try {
+    const result = await request({
+      method: 'get',
+      params: `/ebook/search/?condition=${condition}`,
+    })
+
+    return result;
+  } catch (error) {
+    return false;
+  }
+}

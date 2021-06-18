@@ -7,6 +7,6 @@ module.exports = async (service, param, status = 200) => {
     }
     return { status: 400, result: { error: result.error } };
   } catch (error) {
-    return { status: 500, result: error };
+    return { status: 500, result: { error } };
   }
 };

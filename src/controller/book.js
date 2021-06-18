@@ -7,11 +7,10 @@ const getAllBooks = async (req, res) => {
   return res.status(status).json(result);
 };
 
-const getSearchedBooks = (req, res) => {
-  // req.query
-  const result = bookService.getSearchedBooks();
+const getSearchedBooks = async (req, res) => {
+  const { status, result } = await control(bookService.getSearchedBooks, req.query);
 
-  return res.status(200).json(result);
+  return res.status(status).json(result);
 };
 
 const getRentedBooks = (req, res) => {
