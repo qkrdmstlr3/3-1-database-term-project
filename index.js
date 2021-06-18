@@ -1,6 +1,7 @@
 // Dependencies
 const express = require('express');
 const path = require('path');
+const { initDB } = require('./src/db/init');
 
 // Routes
 const bookRouter = require('./src/routes/book');
@@ -13,6 +14,8 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, './src/pub'));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, './public/css')));
 app.use(express.static(path.join(__dirname, './public/js')));
 
@@ -22,4 +25,7 @@ app.get('/', (req, res) => {
 app.use('/book', bookRouter);
 app.use('/customer', customerRouter);
 
-app.listen(PORT, () => console.log(`Server is running on ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
+  // initDB();
+});
