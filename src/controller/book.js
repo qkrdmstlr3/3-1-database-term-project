@@ -37,10 +37,10 @@ const reserveBook = (req, res) => {
   return res.status(200).json(result);
 };
 
-const returnRentedBook = (req, res) => {
-  const result = bookService.returnRentedBook();
+const returnRentedBook = async (req, res) => {
+  const { status, result } = await control(bookService.returnRentedBook, req.params);
 
-  return res.status(200).json(result);
+  return res.status(status).json(result);
 };
 
 const cancelReservedBook = (req, res) => {

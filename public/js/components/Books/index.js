@@ -53,7 +53,6 @@ class BooksComponent extends ShellHTML {
       book.cno = cno;
       return book;
     });
-    console.log(newBooks);
     this.setState(newBooks);
   }
 

@@ -22,7 +22,7 @@ router.post('/rent/:bookId/customer/:customerId', bookController.rentBook);
 router.post('/reserve/:bookId/customer/:customerId', bookController.reserveBook);
 
 // 책 반납
-router.delete('/rent/:bookId/customer/:customerId', bookController.returnRentedBook);
+router.delete('/rent/:bookId', bookController.returnRentedBook);
 
 // 예약 취소
 router.delete('/reserve/:bookId/customer/:customerId', bookController.cancelReservedBook);

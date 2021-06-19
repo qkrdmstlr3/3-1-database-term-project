@@ -64,3 +64,16 @@ export const rentBook = async (customerId, bookId) => {
     window.alert(error);
   }
 }
+
+export const returnBook = async (bookId) => {
+  try {
+    const result = await request({
+      method: 'delete',
+      params: `/ebook/rent/${bookId}`,
+    });
+
+    return result;
+  } catch (error) {
+    window.alert(error);
+  }
+}

@@ -147,11 +147,13 @@ const reserveBook = () => {
   return '';
 };
 
-const returnRentedBook = ({ bookId, customerId }) => {
-  const query1 = "update ebook set ebook.cno = :cno, ebook.exttimes = null, ebook.daterented = null, ebook.datedue = null where ebook.isbn = :ebookId";
+const returnRentedBook = async ({ bookId }) => {
+  const query = "update ebook set ebook.cno = null, ebook.exttimes = null, ebook.daterented = null, ebook.datedue = null where ebook.isbn = :ebookId";
+  await initDB(query, [bookId]);
 
+  // 메일 보내기 기능 추가
 
-  return '';
+  return true;
 };
 
 const cancelReservedBook = () => {

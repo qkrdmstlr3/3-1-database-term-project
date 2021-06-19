@@ -1,5 +1,5 @@
 import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
-import { getRentedBooksAPI, getReservedBooksAPI } from '../../api/book.js';
+import { getRentedBooksAPI, getReservedBooksAPI, returnBook } from '../../api/book.js';
 
 class MypageComponent extends ShellHTML {
   constructor() {
@@ -12,6 +12,31 @@ class MypageComponent extends ShellHTML {
       ...this.state,
       tab: className,
     });
+  }
+
+  async returnBookHandler(event) {
+    const isbn = event.target.classList[1];
+    
+    const result = await returnBook(isbn);
+    if (result === true) {
+      this.updateRentedBooks(isbn)
+    }
+  }
+
+  updateRentedBooks(isbn) {
+    const check = window.confirm("정말 반납하시겠습니까?");
+    if (!check) { return; }
+    
+    const newBook = this.state.rentedBooks.filter((book) => {
+      if (`${book.isbn}` === isbn) {
+        return false;
+      }
+      return true;
+    });
+    this.setState({
+      ...this.state,
+      rentedBooks: newBook,
+    })
   }
 
   async getRentedBooks() {
@@ -59,8 +84,8 @@ class MypageComponent extends ShellHTML {
           <span>예약여부 : ${cur.isreserved}</span>
         </div>
         <div class="mypage__item__right">
-          <button>연장하기</button>
-          <button>반납하기</button>
+          <button class="mypage__item__extbutton ${cur.isbn}">연장하기</button>
+          <button class="mypage__item__returnbutton ${cur.isbn}">반납하기</button>
         </div>
       </li>
     `),
@@ -121,6 +146,11 @@ class MypageComponent extends ShellHTML {
           func: this.changeTabHandler,
           type: 'click',
         },
+        {
+          className: 'mypage__item__returnbutton',
+          func: this.returnBookHandler,
+          type: 'click',
+        }
       ],
     };
   }
