@@ -77,3 +77,16 @@ export const returnBook = async (bookId) => {
     window.alert(error);
   }
 }
+
+export const cancelReservedBook = async (customerId, bookId) => {
+  try {
+    const result = await request({
+      method: 'delete',
+      params: `/ebook/reserve/${bookId}/customer/${customerId}`,
+    });
+
+    return result;
+  } catch (error) {
+    window.alert(error);
+  }
+}

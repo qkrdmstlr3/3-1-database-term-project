@@ -1,5 +1,5 @@
 import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
-import { getRentedBooksAPI, getReservedBooksAPI, returnBook } from '../../api/book.js';
+import { getRentedBooksAPI, getReservedBooksAPI, returnBook, cancelReservedBook } from '../../api/book.js';
 
 class MypageComponent extends ShellHTML {
   constructor() {
@@ -15,6 +15,9 @@ class MypageComponent extends ShellHTML {
   }
 
   async returnBookHandler(event) {
+    const check = window.confirm("정말 반납하시겠습니까?");
+    if (!check) { return; }
+
     const isbn = event.target.classList[1];
     
     const result = await returnBook(isbn);
@@ -24,9 +27,6 @@ class MypageComponent extends ShellHTML {
   }
 
   updateRentedBooks(isbn) {
-    const check = window.confirm("정말 반납하시겠습니까?");
-    if (!check) { return; }
-    
     const newBook = this.state.rentedBooks.filter((book) => {
       if (`${book.isbn}` === isbn) {
         return false;
@@ -36,7 +36,33 @@ class MypageComponent extends ShellHTML {
     this.setState({
       ...this.state,
       rentedBooks: newBook,
-    })
+    });
+  }
+
+  async cancelReservedBookHandler(event) {
+    const check = window.confirm("정말 취소하시겠습니까?");
+    if (!check) { return; }
+
+    const isbn = event.target.classList[1];
+    const { cno } = useGlobalState('customer');
+    
+    const result = await cancelReservedBook(cno, isbn);
+    if (result === true) {
+      this.updateReservedBooks(isbn)
+    }
+  }
+
+  updateReservedBooks(isbn) {
+    const newBook = this.state.reservedBooks.filter((book) => {
+      if (`${book.isbn}` === isbn) {
+        return false;
+      }
+      return true;
+    });
+    this.setState({
+      ...this.state,
+      reservedBooks: newBook,
+    });
   }
 
   async getRentedBooks() {
@@ -107,13 +133,13 @@ class MypageComponent extends ShellHTML {
           <div class="mypage__item__left-image"></div>
           <div class="mypage__item__left__info">
             <span>제목 : ${cur.title}</span>
-            <span>저자 : ${cur.authors}</span>
+            <span>저자 : ${cur.author}</span>
             <span>출판사 : ${cur.publisher}</span>
-            <span>발행연도 : ${cur.year}</span>
+            <span>발행연도 : ${cur.year.slice(0, 4)}</span>
           </div>
         </div>
         <div class="mypage__item__right">
-          <button>예약취소</button>
+          <button class="mypage__item__cancelbutton ${cur.isbn}">예약취소</button>
         </div>
       </li>
     `),
@@ -150,6 +176,11 @@ class MypageComponent extends ShellHTML {
           className: 'mypage__item__returnbutton',
           func: this.returnBookHandler,
           type: 'click',
+        },
+        {
+          className: 'mypage__item__cancelbutton',
+          func: this.cancelReservedBookHandler,
+          type: 'click',
         }
       ],
     };
@@ -157,72 +188,3 @@ class MypageComponent extends ShellHTML {
 }
 
 createComponent('mypage-component', MypageComponent);
-
-const reservedBooks = [
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-  },
-];
-
-const rentedBooks = [
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-    dateDue: '2021-07-12',
-    extTimes: 1,
-    isReserved: true,
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-    dateDue: '2021-07-12',
-    extTimes: 1,
-    isReserved: true,
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-    dateDue: '2021-07-12',
-    extTimes: 1,
-    isReserved: true,
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-    dateDue: '2021-07-12',
-    extTimes: 1,
-    isReserved: true,
-  },
-  {
-    title: '제목',
-    authors: ['저자1', '저자2'],
-    publisher: '출판사',
-    year: '2020',
-    dateDue: '2021-07-12',
-    extTimes: 1,
-    isReserved: true,
-  },
-];

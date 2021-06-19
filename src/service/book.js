@@ -152,12 +152,16 @@ const returnRentedBook = async ({ bookId }) => {
   await initDB(query, [bookId]);
 
   // 메일 보내기 기능 추가
+  // previous rental에 기록 추가
 
   return true;
 };
 
-const cancelReservedBook = () => {
-  return '';
+const cancelReservedBook = async ({ customerId, bookId }) => {
+  const query = "delete from reserve where cno = :cno and isbn = :isbn";
+  await initDB(query, [ customerId, bookId ]);
+
+  return true;
 };
 
 module.exports = {

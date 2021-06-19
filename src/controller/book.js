@@ -43,10 +43,10 @@ const returnRentedBook = async (req, res) => {
   return res.status(status).json(result);
 };
 
-const cancelReservedBook = (req, res) => {
-  const result = bookService.cancelReservedBook();
+const cancelReservedBook = async (req, res) => {
+  const { status, result } = await control(bookService.cancelReservedBook, req.params);
 
-  return res.status(200).json(result);
+  return res.status(status).json(result);
 };
 
 module.exports = {
