@@ -1,17 +1,22 @@
 const { initDB } = require('../db/init');
 
 const signinCustomer = async ({ username, password }) => {
-  const { data } = await initDB("select * from customer where name=:username", [username]);
-  const result = data[0];
-  
-  if (!result || !result.length) {
+  const { data, attr } = await initDB("select * from customer where name=:username", [username]);
+
+  if (!data.length) {
     return { error: '존재하지 않는 계정입니다' };
   }
-  if ( result[2] !== password ) {
+
+  const user = {}
+  data[0].forEach((d, index) => {
+    user[attr[index].name.toLowerCase()] = d;
+  });
+
+  if ( user.passwd !== password ) {
     return { error: '비밀번호가 일치하지 않습니다' };
   }
 
-  return true;
+  return user;
 };
 
 module.exports = {

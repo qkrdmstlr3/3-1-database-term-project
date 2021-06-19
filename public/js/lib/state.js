@@ -9,5 +9,6 @@ state({
   key: 'customer',
   initial: {
     name: undefined,
+    cno: undefined,
   }
 });

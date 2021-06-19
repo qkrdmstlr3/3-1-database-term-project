@@ -1,17 +1,39 @@
-import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
+import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
+import { getRentedBooksAPI } from '../../api/book.js';
 
 class MypageComponent extends ShellHTML {
   constructor() {
-    super('rent');
+    super({ tab: 'rent', books: undefined });
   }
 
   changeTabHandler(event) {
     const className = event.target.classList[0];
-    this.setState(className);
+    this.setState({
+      ...this.state,
+      tab: className,
+    });
   }
 
+  async getRentedBooks() {
+    const { cno } = useGlobalState('customer');
+    const books = await getRentedBooksAPI(cno);
+
+    this.setState({
+      ...this.state,
+      books,
+    });
+  }
+
+  async getReservedBooks() {}
+
   getRentHTML() {
-    return rentedBooks.reduce(
+    if (!this.state.books) {
+      this.getRentedBooks();
+      return '';
+    }
+    console.log(this.state.books);
+
+    return this.state.books.reduce(
       (acc, cur) =>
         (acc += `
       <li class="mypage__item">
@@ -19,15 +41,15 @@ class MypageComponent extends ShellHTML {
           <div class="mypage__item__left-image"></div>
           <div class="mypage__item__left__info">
             <span>제목 : ${cur.title}</span>
-            <span>저자 : ${cur.authors}</span>
+            <span>저자 : ${cur.author}</span>
             <span>출판사 : ${cur.publisher}</span>
-            <span>발행연도 : ${cur.year}</span>
+            <span>발행연도 : ${cur.year.slice(0, 4)}</span>
           </div>
         </div>
         <div class="mypage__item__center__info">
-          <span>반납일 : ${cur.dateDue}</span>
-          <span>연장횟수 : ${cur.extTimes}</span>
-          <span>예약여부 : ${cur.isReserved}</span>
+          <span>반납일 : ${cur.datedue.slice(0, 10)}</span>
+          <span>연장횟수 : ${cur.exttimes}</span>
+          <span>예약여부 : ${cur.isreserved}</span>
         </div>
         <div class="mypage__item__right">
           <button>연장하기</button>
@@ -63,7 +85,7 @@ class MypageComponent extends ShellHTML {
   }
 
   render() {
-    const isRentTab = this.state === 'rent';
+    const isRentTab = this.state.tab === 'rent';
 
     return {
       html: `

@@ -70,8 +70,25 @@ const getSearchedBooks = async ({ condition }) => {
   return result;
 };
 
-const getRentedBooks = () => {
-  return '';
+const getRentedBooks = async ({ id }) => {
+  const query = "select * from ebook join authors on ebook.isbn = authors.isbn where ebook.cno = :id";
+  const { data, attr } = await initDB(query, [ id ]);
+
+  const result = [];
+  data.forEach((item) => {
+    const newItem = {}
+    for(let i = 0; i < item.length; i += 1) {
+      newItem[attr[i].name.toLowerCase()] = item[i];
+    };
+    newItem.author = [ newItem.author ];
+    if(result.length && newItem.isbn === result[result.length - 1].isbn) {
+      result[result.length - 1].author.push(newItem.author[0]);
+      return;
+    }
+    result.push(newItem);
+  });
+  
+  return result;
 };
 
 const getReservedBooks = () => {

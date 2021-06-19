@@ -27,7 +27,8 @@ class SidebarComponent extends ShellHTML {
     if (result.error) {
       return window.alert(result.error);
     }
-    setGlobalState('customer', { name: usernameInput.value });
+    
+    setGlobalState('customer', { name: result.name, cno: result.cno });
   }
 
   signoutButtonClickHandler() {

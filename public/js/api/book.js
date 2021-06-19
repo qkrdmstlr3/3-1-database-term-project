@@ -25,3 +25,16 @@ export const searchBooksAPI = async (condition) => {
     return false;
   }
 }
+
+export const getRentedBooksAPI = async (id) => {
+  try {
+    const result = await request({
+      method: 'get',
+      params: `/ebook/rent/customer/${id}`
+    })
+
+    return result;
+  } catch (error) {
+    window.alert(error);
+  }
+}
