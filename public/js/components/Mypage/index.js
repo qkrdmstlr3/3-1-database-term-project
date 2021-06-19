@@ -1,9 +1,9 @@
 import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
-import { getRentedBooksAPI } from '../../api/book.js';
+import { getRentedBooksAPI, getReservedBooksAPI } from '../../api/book.js';
 
 class MypageComponent extends ShellHTML {
   constructor() {
-    super({ tab: 'rent', books: undefined });
+    super({ tab: 'rent', rentedBooks: undefined, reservedBooks: undefined });
   }
 
   changeTabHandler(event) {
@@ -16,24 +16,31 @@ class MypageComponent extends ShellHTML {
 
   async getRentedBooks() {
     const { cno } = useGlobalState('customer');
-    const books = await getRentedBooksAPI(cno);
+    const rentedBooks = await getRentedBooksAPI(cno);
 
     this.setState({
       ...this.state,
-      books,
+      rentedBooks,
     });
   }
 
-  async getReservedBooks() {}
+  async getReservedBooks() {
+    const { cno } = useGlobalState('customer');
+    const reservedBooks = await getReservedBooksAPI(cno);
+
+    this.setState({
+      ...this.state,
+      reservedBooks,
+    });
+  }
 
   getRentHTML() {
-    if (!this.state.books) {
+    if (!this.state.rentedBooks) {
       this.getRentedBooks();
       return '';
     }
-    console.log(this.state.books);
 
-    return this.state.books.reduce(
+    return this.state.rentedBooks.reduce(
       (acc, cur) =>
         (acc += `
       <li class="mypage__item">
@@ -62,7 +69,12 @@ class MypageComponent extends ShellHTML {
   }
 
   getReservation() {
-    return reservedBooks.reduce(
+    if (!this.state.reservedBooks) {
+      this.getReservedBooks();
+      return '';
+    }
+
+    return this.state.reservedBooks.reduce(
       (acc, cur) =>
         (acc += `
       <li class="mypage__item">

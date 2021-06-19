@@ -91,8 +91,25 @@ const getRentedBooks = async ({ id }) => {
   return result;
 };
 
-const getReservedBooks = () => {
-  return '';
+const getReservedBooks = async ({ id }) => {
+  const query = "select * from ebook join authors on ebook.isbn = authors.isbn join reserve on ebook.isbn = reserve.isbn where reserve.cno = :id";
+  const { data, attr } = await initDB(query, [ id ]);
+
+  const result = [];
+  data.forEach((item) => {
+    const newItem = {}
+    for(let i = 0; i < item.length; i += 1) {
+      newItem[attr[i].name.toLowerCase()] = item[i];
+    };
+    newItem.author = [ newItem.author ];
+    if(result.length && newItem.isbn === result[result.length - 1].isbn) {
+      result[result.length - 1].author.push(newItem.author[0]);
+      return;
+    }
+    result.push(newItem);
+  });
+  
+  return result;
 };
 
 const rentBook = () => {
