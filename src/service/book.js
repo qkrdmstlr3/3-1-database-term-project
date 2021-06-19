@@ -112,15 +112,45 @@ const getReservedBooks = async ({ id }) => {
   return result;
 };
 
-const rentBook = () => {
-  return '';
+const rentBook = async ({ bookId, customerId }) => {
+  function pad(num) { return ('00'+num).slice(-2) };
+  function changeDateFormat(date) {
+    return  date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
+  }
+  
+  const query1 = "select count(*) from ebook where ebook.cno = :cno"
+  const query2 = `update ebook 
+    set ebook.cno = :cno, ebook.exttimes = 0, ebook.daterented = to_date(:rentdate, 'yyyymmdd'), ebook.datedue = to_date(:duedate, 'yyyymmdd') 
+    where ebook.isbn = :isbn
+  `;
+
+  const { data } = await initDB(query1, [ customerId ]);
+  if (data[0][0] >= 3) {
+    return { error: '대여 권 수를 초과하였습니다'};
+  }
+
+  let date = new Date();
+  let duedate = new Date();
+  if (date.getDay() < 27) {
+    date = new Date('2021/06/28');
+    duedate = new Date('2021/06/28');
+    duedate.setDate(duedate.getDate() + 10);
+  }
+  date = changeDateFormat(date);
+  duedate = changeDateFormat(duedate);
+
+  await initDB(query2, [customerId, date, duedate, bookId]);
+  return true;
 };
 
 const reserveBook = () => {
   return '';
 };
 
-const returnRentedBook = () => {
+const returnRentedBook = ({ bookId, customerId }) => {
+  const query1 = "update ebook set ebook.cno = :cno, ebook.exttimes = null, ebook.daterented = null, ebook.datedue = null where ebook.isbn = :ebookId";
+
+
   return '';
 };
 

@@ -51,3 +51,16 @@ export const getReservedBooksAPI = async (id) => {
     window.alert(error);
   }
 }
+
+export const rentBook = async (customerId, bookId) => {
+  try {
+    const result = await request({
+      method: 'post',
+      params: `/ebook/rent/${bookId}/customer/${customerId}`,
+    });
+
+    return result;
+  } catch (error) {
+    window.alert(error);
+  }
+}

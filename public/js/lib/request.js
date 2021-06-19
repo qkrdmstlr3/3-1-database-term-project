@@ -1,4 +1,4 @@
-const request = async ({ method, params = '', data = '' }) => {
+const request = async ({ method, params = '', data = {} }) => {
   const config = { method }
 
   if (method !== 'get') {

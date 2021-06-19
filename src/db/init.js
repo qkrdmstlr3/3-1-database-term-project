@@ -1,4 +1,6 @@
 const oracledb = require('oracledb');
+oracledb.autoCommit = true;
+
 const config = {
   user: 'd201602002',
   password: '0000',

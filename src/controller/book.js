@@ -25,10 +25,10 @@ const getReservedBooks = async (req, res) => {
   return res.status(status).json(result);
 };
 
-const rentBook = (req, res) => {
-  const result = bookService.rentBook();
+const rentBook = async (req, res) => {
+  const { status, result } = await control(bookService.rentBook, req.params);
 
-  return res.status(200).json(result);
+  return res.status(status).json(result);
 };
 
 const reserveBook = (req, res) => {

@@ -1,5 +1,5 @@
-import { ShellHTML, createComponent } from '../../lib/shell-html/index.js';
-import { getAllBookAPI, searchBooksAPI } from '../../api/book.js';
+import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
+import { getAllBookAPI, searchBooksAPI, rentBook } from '../../api/book.js';
 
 class BooksComponent extends ShellHTML {
   constructor() {
@@ -28,6 +28,35 @@ class BooksComponent extends ShellHTML {
     this.setState(books);
   }
 
+  async rentBookHandler(event) {
+    const isbn = event.target.id;
+    const { cno } = useGlobalState('customer');
+    if (!cno) {
+      return window.alert("로그인이 필요합니다");
+    }
+
+    const check = window.confirm("정말 대여하시겠습니까?");
+    if (!check) { return; }
+
+    const result = await rentBook(cno, isbn);
+    if (result.error) {
+      return window.alert(result.error);
+    }
+    this.changeCurrentBooksState(isbn, cno);
+  }
+
+  changeCurrentBooksState(isbn, cno) {
+    const newBooks = this.state.map((book) => {
+      if(`${book.isbn}` !== isbn) {
+        return book
+      };
+      book.cno = cno;
+      return book;
+    });
+    console.log(newBooks);
+    this.setState(newBooks);
+  }
+
   getBooksHTML() {
     return this.state.reduce(
       (acc, cur) =>
@@ -36,8 +65,8 @@ class BooksComponent extends ShellHTML {
         <div class="books__item__left">
           <div class="books__item__left-image"></div>
           ${cur.cno 
-            ? '<button>대여불가</button>'
-            : '<button>대여하기</button>'}
+            ? '<button class="books__not__button">대여불가</button>'
+            : `<button id="${cur.isbn}" class="books__rent__button">대여하기</button>`}
         </div>
         <div class="books__item__right">
           <span>제목 : ${cur.title}</span>
@@ -67,7 +96,12 @@ class BooksComponent extends ShellHTML {
         {
           className: 'books__form',
           func: this.searchHandler,
-          type: 'submit'
+          type: 'submit',
+        },
+        {
+          className: 'books__rent__button',
+          func: this.rentBookHandler,
+          type: 'click',
         }
       ]
     };

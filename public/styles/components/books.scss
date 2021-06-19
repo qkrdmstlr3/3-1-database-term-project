@@ -56,6 +56,11 @@
     }
   }
 
+  &__not__button {
+    background-color: white;
+    border: 1px solid black;
+  }
+
   &-disable {
     opacity: 0.5;
   }
