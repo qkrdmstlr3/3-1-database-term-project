@@ -1,5 +1,5 @@
 import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
-import { getAllBookAPI, searchBooksAPI, rentBook } from '../../api/book.js';
+import { getAllBookAPI, searchBooksAPI, rentBook, reserveBook } from '../../api/book.js';
 
 class BooksComponent extends ShellHTML {
   constructor() {
@@ -56,7 +56,25 @@ class BooksComponent extends ShellHTML {
     this.setState(newBooks);
   }
 
+  async reserveBookHandler(event) {
+    const isbn = event.target.id;
+    const { cno } = useGlobalState('customer');
+    if (!cno) {
+      return window.alert("로그인이 필요합니다");
+    }
+
+    const check = window.confirm("정말 예약하시겠습니까?");
+    if (!check) { return; }
+
+    const result = await reserveBook(cno, isbn);
+    if (result.error) {
+      return window.alert(result.error);
+    }
+  }
+
   getBooksHTML() {
+    const { cno } = useGlobalState('customer');
+
     return this.state.reduce(
       (acc, cur) =>
         (acc += `
@@ -64,7 +82,7 @@ class BooksComponent extends ShellHTML {
         <div class="books__item__left">
           <div class="books__item__left-image"></div>
           ${cur.cno 
-            ? '<button class="books__not__button">대여불가</button>'
+            ? '<button id="${cur.isbn}" class="books__reserve__button">예약하기</button>'
             : `<button id="${cur.isbn}" class="books__rent__button">대여하기</button>`}
         </div>
         <div class="books__item__right">
@@ -100,6 +118,11 @@ class BooksComponent extends ShellHTML {
         {
           className: 'books__rent__button',
           func: this.rentBookHandler,
+          type: 'click',
+        },
+        {
+          className: 'books__reserve__button',
+          func: this.reserveBookHandler,
           type: 'click',
         }
       ]

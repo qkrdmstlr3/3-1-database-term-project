@@ -1,5 +1,5 @@
 import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
-import { getRentedBooksAPI, getReservedBooksAPI, returnBook, cancelReservedBook } from '../../api/book.js';
+import { getRentedBooksAPI, getReservedBooksAPI, returnBook, cancelReservedBook, extendExtBook } from '../../api/book.js';
 
 class MypageComponent extends ShellHTML {
   constructor() {
@@ -63,6 +63,35 @@ class MypageComponent extends ShellHTML {
       ...this.state,
       reservedBooks: newBook,
     });
+  }
+
+  async extendExtBookHandler(event) {
+    const check = window.confirm("정말 연장하시겠습니까?");
+    if (!check) { return; }
+
+    const isbn = event.target.classList[1];
+    
+    const result = await extendExtBook(isbn);
+    if (result.error) {
+      return window.alert(result.error);
+    }
+    this.updateRentedBooksExtTime(isbn);
+  }
+
+  updateRentedBooksExtTime(isbn) {
+    const newBooks = this.state.rentedBooks.map((book) => {
+      if(`${book.isbn}` !== isbn) {
+        return book
+      }
+      book.exttimes = book.exttimes + 1;
+      //TODO: 날짜도 추후 수정
+
+      return book;
+    });
+    this.setState({
+      ...this.state,
+      rentedBooks: newBooks,
+    })
   }
 
   async getRentedBooks() {
@@ -180,6 +209,11 @@ class MypageComponent extends ShellHTML {
         {
           className: 'mypage__item__cancelbutton',
           func: this.cancelReservedBookHandler,
+          type: 'click',
+        },
+        {
+          className: 'mypage__item__extbutton',
+          func: this.extendExtBookHandler,
           type: 'click',
         }
       ],

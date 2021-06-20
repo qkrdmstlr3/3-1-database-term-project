@@ -1,5 +1,10 @@
 const { initDB } = require('../db/init');
 
+function pad(num) { return ('00'+num).slice(-2) };
+function changeDateFormat(date) {
+  return  date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
+}
+
 const getAllBooks = async () => {
   const query = "select * from ebook join authors on ebook.isbn = authors.isbn";
   const { data, attr } = await initDB(query);
@@ -113,11 +118,6 @@ const getReservedBooks = async ({ id }) => {
 };
 
 const rentBook = async ({ bookId, customerId }) => {
-  function pad(num) { return ('00'+num).slice(-2) };
-  function changeDateFormat(date) {
-    return  date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
-  }
-  
   const query1 = "select count(*) from ebook where ebook.cno = :cno"
   const query2 = `update ebook 
     set ebook.cno = :cno, ebook.exttimes = 0, ebook.daterented = to_date(:rentdate, 'yyyymmdd'), ebook.datedue = to_date(:duedate, 'yyyymmdd') 
@@ -143,7 +143,17 @@ const rentBook = async ({ bookId, customerId }) => {
   return true;
 };
 
-const reserveBook = () => {
+const reserveBook = async ({ customerId, bookId }) => {
+  const query1 = ''; // 이미 대여중이라면 에러 반환
+  const query = "insert into reserve (isbn, cno, datetime) values (:isbn, :cno, :datetime)";
+
+  let date = new Date();
+  if(date.getDay() < 27) {
+    date = new Date('2021/06/28');
+    // 시간은 지금 시간 사용
+  }
+
+  // await initDB(query, [bookId, customerId, date]);
   return '';
 };
 
@@ -151,8 +161,8 @@ const returnRentedBook = async ({ bookId }) => {
   const query = "update ebook set ebook.cno = null, ebook.exttimes = null, ebook.daterented = null, ebook.datedue = null where ebook.isbn = :ebookId";
   await initDB(query, [bookId]);
 
-  // 메일 보내기 기능 추가
-  // previous rental에 기록 추가
+  //TODO: 메일 보내기 기능 추가
+  //TODO: previous rental에 기록 추가
 
   return true;
 };
@@ -164,6 +174,30 @@ const cancelReservedBook = async ({ customerId, bookId }) => {
   return true;
 };
 
+const extendExtDateBook = async ({ bookId }) => {
+  const query1 = "select exttimes, to_char(datedue) from ebook where ebook.isbn = :isbn";
+  const { data } = await initDB(query1, [bookId]);
+
+  const exttimes = parseInt(data[0][0]);
+  const datedue = `20${data[0][1]}`;
+  if (exttimes >= 2) {
+    return { error: '연장 횟수를 초과하셨습니다' };
+  }
+
+  let date = new Date(datedue);
+  date.setDate(date.getDate() + 10);
+  date = changeDateFormat(date);
+
+  const query2 = `update ebook 
+    set ebook.exttimes = :times, ebook.datedue = to_date(:datedue, 'yyyymmdd')
+    where ebook.isbn = :isbn
+  `;
+
+  await initDB(query2, [exttimes + 1, date, bookId]);
+
+  return true;
+}
+
 module.exports = {
   getAllBooks,
   getSearchedBooks,
@@ -173,4 +207,5 @@ module.exports = {
   reserveBook,
   returnRentedBook,
   cancelReservedBook,
+  extendExtDateBook,
 };

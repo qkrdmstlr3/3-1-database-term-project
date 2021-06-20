@@ -27,4 +27,7 @@ router.delete('/rent/:bookId', bookController.returnRentedBook);
 // 예약 취소
 router.delete('/reserve/:bookId/customer/:customerId', bookController.cancelReservedBook);
 
+// 대여 기간 연장
+router.put('/extend/:bookId', bookController.extendExtDateBook);
+
 module.exports = router;

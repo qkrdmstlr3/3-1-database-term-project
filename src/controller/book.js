@@ -31,10 +31,10 @@ const rentBook = async (req, res) => {
   return res.status(status).json(result);
 };
 
-const reserveBook = (req, res) => {
-  const result = bookService.reserveBook();
+const reserveBook = async (req, res) => {
+  const { status, result } = await control(bookService.reserveBook, req.params);
 
-  return res.status(200).json(result);
+  return res.status(status).json(result);
 };
 
 const returnRentedBook = async (req, res) => {
@@ -49,6 +49,12 @@ const cancelReservedBook = async (req, res) => {
   return res.status(status).json(result);
 };
 
+const extendExtDateBook = async (req, res) => {
+  const { status, result } = await control(bookService.extendExtDateBook, req.params);
+
+  return res.status(status).json(result);
+}
+
 module.exports = {
   getAllBooks,
   getSearchedBooks,
@@ -58,4 +64,5 @@ module.exports = {
   reserveBook,
   returnRentedBook,
   cancelReservedBook,
+  extendExtDateBook,
 };
