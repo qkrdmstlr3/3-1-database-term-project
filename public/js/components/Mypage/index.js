@@ -136,7 +136,6 @@ class MypageComponent extends ShellHTML {
         <div class="mypage__item__center__info">
           <span>반납일 : ${cur.datedue.slice(0, 10)}</span>
           <span>연장횟수 : ${cur.exttimes}</span>
-          <span>예약여부 : ${cur.isreserved}</span>
         </div>
         <div class="mypage__item__right">
           <button class="mypage__item__extbutton ${cur.isbn}">연장하기</button>

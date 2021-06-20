@@ -129,13 +129,9 @@ const rentBook = async ({ bookId, customerId }) => {
     return { error: '대여 권 수를 초과하였습니다'};
   }
 
-  let date = new Date();
-  let duedate = new Date();
-  if (date.getDay() < 27) {
-    date = new Date('2021/06/28');
-    duedate = new Date('2021/06/28');
-    duedate.setDate(duedate.getDate() + 10);
-  }
+  let date = new Date('2021/06/28');
+  let duedate = new Date('2021/06/28');
+  duedate.setDate(duedate.getDate() + 10);
   date = changeDateFormat(date);
   duedate = changeDateFormat(duedate);
 
@@ -144,17 +140,32 @@ const rentBook = async ({ bookId, customerId }) => {
 };
 
 const reserveBook = async ({ customerId, bookId }) => {
-  const query1 = ''; // 이미 대여중이라면 에러 반환
-  const query = "insert into reserve (isbn, cno, datetime) values (:isbn, :cno, :datetime)";
+  const query0 = "select count(*) from ebook where ebook.isbn = :isbn and ebook.cno = :cno";
+  const query1 = "select isbn from reserve where reserve.cno = :cno";
+  const query2 = "insert into reserve (isbn, cno, datetime) values (:isbn, :cno, to_date(:now, 'YYYYMMDDHH24MISS'))";
 
-  let date = new Date();
-  if(date.getDay() < 27) {
-    date = new Date('2021/06/28');
-    // 시간은 지금 시간 사용
+  const { data: query0result } = await initDB(query0, [ bookId, customerId ]);
+  if (query0result[0][0] > 0) {
+    return { error: '대여하시고 있는 도서입니다'};
   }
 
-  // await initDB(query, [bookId, customerId, date]);
-  return '';
+  const { data: query1result } = await initDB(query1, [ customerId ]);
+  if (query1result.length >= 3) {
+    return { error: '예약 권 수를 초과하여 예약할 수 없습니다' };
+  }
+  for (let i = 0; i < query1result.length; i += 1) {
+    if (query1result[i][0] === parseInt(bookId)) {
+      return { error: '이미 예약하신 도서입니다' };
+    }
+  }
+
+  let date = new Date('2021/06/28');
+  const now = new Date();
+  date = changeDateFormat(date);
+  date = `${date}${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
+
+  await initDB(query2, [bookId, customerId, date]);
+  return true;
 };
 
 const returnRentedBook = async ({ bookId }) => {
@@ -175,6 +186,7 @@ const cancelReservedBook = async ({ customerId, bookId }) => {
 };
 
 const extendExtDateBook = async ({ bookId }) => {
+  //TODO: 예약되어있다면 연장 불가
   const query1 = "select exttimes, to_char(datedue) from ebook where ebook.isbn = :isbn";
   const { data } = await initDB(query1, [bookId]);
 

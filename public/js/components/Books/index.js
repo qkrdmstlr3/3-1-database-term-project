@@ -70,6 +70,7 @@ class BooksComponent extends ShellHTML {
     if (result.error) {
       return window.alert(result.error);
     }
+    window.alert("예약이 완료되었습니다");
   }
 
   getBooksHTML() {
@@ -82,7 +83,7 @@ class BooksComponent extends ShellHTML {
         <div class="books__item__left">
           <div class="books__item__left-image"></div>
           ${cur.cno 
-            ? '<button id="${cur.isbn}" class="books__reserve__button">예약하기</button>'
+            ? `<button id="${cur.isbn}" class="books__reserve__button">예약하기</button>`
             : `<button id="${cur.isbn}" class="books__rent__button">대여하기</button>`}
         </div>
         <div class="books__item__right">
