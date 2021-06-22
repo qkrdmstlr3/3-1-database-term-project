@@ -21,3 +21,8 @@
 ### 클라이언트 흐름
 
 public 폴더안의 파일들이 클라이언트를 담당합니다. js폴더의 main.js가 엔트리 파일입니다. 나머지 폴더들에 대해서 설명드리자면 api폴더는 서버와 통신하기 위한 로직이 들어있고, components폴더는 렌더링에 이용되는 컴포넌트들이 들어있습니다(리액트의 컴포넌트와 비슷한 역할이라고 보시면 됩니다). lib폴더는 컴포넌트 개발을 위해서 필요한 shell-html등의 파일들이 담겨 있습니다.
+
+## 참고주소
+
+자체제작한 클라이언트 라이브러리인 shell-html 설명한 내 포스팅 : https://shellboylog.com/develop/shell-html%20DOCS
+혹시 위 주소가 안 나올 시 다음 주소 가장 위 포스트 클릭 : https://shellboylog.com/list
