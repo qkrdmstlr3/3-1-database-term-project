@@ -19,8 +19,10 @@ class MypageComponent extends ShellHTML {
     if (!check) { return; }
 
     const isbn = event.target.classList[1];
+    const { cno } = useGlobalState('customer');
+    const [book] = this.state.rentedBooks.filter((book) => `${book.isbn}` === isbn );
     
-    const result = await returnBook(isbn);
+    const result = await returnBook(cno, isbn, book.daterented);
     if (result === true) {
       this.updateRentedBooks(isbn)
     }
@@ -84,7 +86,6 @@ class MypageComponent extends ShellHTML {
         return book
       }
       book.exttimes = book.exttimes + 1;
-      //TODO: 날짜도 추후 수정
 
       return book;
     });

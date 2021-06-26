@@ -65,11 +65,11 @@ export const rentBook = async (customerId, bookId) => {
   }
 }
 
-export const returnBook = async (bookId) => {
+export const returnBook = async (customerId, bookId, daterented) => {
   try {
     const result = await request({
       method: 'delete',
-      params: `/ebook/rent/${bookId}`,
+      params: `/ebook/rent/${bookId}/customer/${customerId}/date/${daterented}`,
     });
 
     return result;

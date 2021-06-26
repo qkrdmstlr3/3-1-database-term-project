@@ -1,4 +1,6 @@
 const { initDB } = require('../db/init');
+const nodemailer = require('nodemailer');
+const config = require('../config');
 
 function pad(num) { return ('00'+num).slice(-2) };
 function changeDateFormat(date) {
@@ -129,8 +131,8 @@ const rentBook = async ({ bookId, customerId }) => {
     return { error: '대여 권 수를 초과하였습니다'};
   }
 
-  let date = new Date('2021/06/28');
-  let duedate = new Date('2021/06/28');
+  let date = new Date();
+  let duedate = new Date();
   duedate.setDate(duedate.getDate() + 10);
   date = changeDateFormat(date);
   duedate = changeDateFormat(duedate);
@@ -159,7 +161,7 @@ const reserveBook = async ({ customerId, bookId }) => {
     }
   }
 
-  let date = new Date('2021/06/28');
+  let date = new Date();
   const now = new Date();
   date = changeDateFormat(date);
   date = `${date}${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
@@ -168,12 +170,66 @@ const reserveBook = async ({ customerId, bookId }) => {
   return true;
 };
 
-const returnRentedBook = async ({ bookId }) => {
-  const query = "update ebook set ebook.cno = null, ebook.exttimes = null, ebook.daterented = null, ebook.datedue = null where ebook.isbn = :ebookId";
-  await initDB(query, [bookId]);
+const returnRentedBook = async ({ customerId, bookId, daterented }) => {
+  const query0 = "update ebook set ebook.cno = :cno, ebook.exttimes = 0, ebook.daterented = :daterented, ebook.datedue = :datedue where ebook.isbn = :ebookId" // 예약한 사람이 있는 경우
+  const query1 = "update ebook set ebook.cno = null, ebook.exttimes = null, ebook.daterented = null, ebook.datedue = null where ebook.isbn = :ebookId"; // 예약한 사람이 없는 경우
+  const query2 = "insert into previousrental (isbn, cno, daterented, datereturned) values (:isbn, :cno, :daterented, :datereturned)";
+  const query3 = "select cno from reserve where reserve.isbn = :isbn order by reserve.datetime";
+  const query4 = "delete from reserve where reserve.isbn = :isbn and cno = :cno";
+  const query5 = "select email, name from customer where cno = :cno"
 
-  //TODO: 메일 보내기 기능 추가
-  //TODO: previous rental에 기록 추가
+  //previous rental에 기록 추가
+  let today = new Date()
+  today = changeDateFormat(today)
+  let rentedDate = new Date(daterented)
+  rentedDate = changeDateFormat(rentedDate)
+  await initDB(query2, [bookId, customerId, rentedDate, today])
+
+  //예약한 사람이 있다면 reserve테이블에서 기록 삭제, 메일 보내기 기능 추가
+  const { data } = await initDB(query3, [bookId]);
+  if (data[0]) {
+    const cno = data[0][0];
+
+    await initDB(query4, [bookId, cno])
+    const { data: reservedUser } = await initDB(query5, [cno]);
+    const email = reservedUser[0][0];
+    const name = reservedUser[0][1];
+
+    const transporter = nodemailer.createTransport({
+      // 사용하고자 하는 서비스, gmail계정으로 전송할 예정이기에 'gmail'
+      service: 'gmail',
+      // host를 gmail로 설정
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        // Gmail 주소 입력, 'testmail@gmail.com'
+        user: config.mail,
+        // Gmail 패스워드 입력
+        pass: config.password,
+      },
+    });
+
+    await transporter.sendMail({
+      // 보내는 곳의 이름과, 메일 주소를 입력
+      from: `"Library"`,
+      // 받는 곳의 메일 주소를 입력
+      to: email,
+      // 보내는 메일의 제목을 입력
+      subject: '예약 도서 대여됨',
+      // 보내는 메일의 내용을 입력
+      // text: 일반 text로 작성된 내용
+      // html: html로 작성된 내용
+      text: `${name}님이 예약한 도서가 대여되었습니다`,
+    });
+
+    let duedate = new Date();
+    duedate.setDate(duedate.getDate() + 10);
+    duedate = changeDateFormat(duedate);
+    await initDB(query0, [cno, rentedDate, duedate, bookId]);
+  } else {
+    await initDB(query1, [bookId]); // 대출 도서에서 빌린 정보 없애기
+  }
 
   return true;
 };
@@ -186,8 +242,14 @@ const cancelReservedBook = async ({ customerId, bookId }) => {
 };
 
 const extendExtDateBook = async ({ bookId }) => {
-  //TODO: 예약되어있다면 연장 불가
+  const query0 = "select count(*) from reserve where reserve.isbn = :isbn";
   const query1 = "select exttimes, to_char(datedue) from ebook where ebook.isbn = :isbn";
+
+  const { data: reservedCount } = await initDB(query0, [bookId]);
+  if (reservedCount[0][0] > 0) {
+    return { error: '다른 사람에 의해 예약된 책은 연장할 수 없습니다' };
+  }
+
   const { data } = await initDB(query1, [bookId]);
 
   const exttimes = parseInt(data[0][0]);
