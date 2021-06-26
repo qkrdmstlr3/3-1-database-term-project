@@ -8,5 +8,6 @@ import './components/Sidebar/index.js';
 import './components/Main/index.js';
 import './components/Books/index.js';
 import './components/Mypage/index.js';
+import './components/Statistic/index.js';
 
 render('layout-component', document.getElementById('root'));

@@ -19,6 +19,10 @@ class SidebarComponent extends ShellHTML {
     setGlobalState('page', 'mypage');
   }
 
+  statisticButtonClickHandler() {
+    setGlobalState('page', 'statistic');
+  }
+
   async signinButtonClickHandler() {
     const usernameInput = document.getElementById('sidebar__username');
     const passwordInput = document.getElementById('sidebar__password');
@@ -95,6 +99,11 @@ class SidebarComponent extends ShellHTML {
           func: this.signoutButtonClickHandler,
           type: 'click',
         },
+        {
+          className: 'sidebar__statistic',
+          func: this.statisticButtonClickHandler,
+          type: 'click',
+        }
       ],
     };
   }

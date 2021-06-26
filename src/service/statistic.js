@@ -3,10 +3,12 @@ const { initDB } = require('../db/init');
 // 대출되었던 책의 이름과 빌려간 고객의 이름, 대출 날짜, 반납 날짜를 출력
 const getStatistic1 = async () => {
   const query = `
-    SELECT P.DATERENTED "대출날짜", P.DATERETURNED "반납날짜", E.TITLE "도서명", C.name "고객명" 
-    FROM PREVIOUSRENTAL P 
-    JOIN EBOOK E ON (P.isbn = E.isbn) 
-    JOIN CUSTOMER C ON (P.cno = C.cno)`;
+  SELECT E.TITLE "도서명", COUNT(*) "대출 수"
+  FROM PREVIOUSRENTAL P 
+  JOIN EBOOK E ON (P.isbn = E.isbn) 
+  JOIN CUSTOMER C ON (P.cno = C.cno)
+  GROUP BY E.TITLE
+  ORDER BY COUNT(*) DESC`;
 
   const { data, attr } = await initDB(query);
   

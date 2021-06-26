@@ -16,6 +16,7 @@ class MainComponent extends ShellHTML {
   render() {
     const page = useGlobalState('page');
     const isbookspage = page === 'books';
+    const isStatisticpage = page === 'statistic';
 
     return {
       html: `
@@ -23,7 +24,9 @@ class MainComponent extends ShellHTML {
           ${
             isbookspage
               ? `<books-component id="books"></books-component>`
-              : `<mypage-component id="mypage"></mypage-component>`
+              : isStatisticpage 
+                ? `<statistic-component id="statistic"></statistic-component>` 
+                : `<mypage-component id="mypage"></mypage-component>`
           }
         </div>`,
     };

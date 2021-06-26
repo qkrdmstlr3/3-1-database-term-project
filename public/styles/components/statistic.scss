@@ -1,0 +1,50 @@
+.statistic {
+  &__tab {
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 1.5rem;
+  }
+
+  button {
+    width: 33%;
+    height: 2rem;
+
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #3897db;
+    background-color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+
+  &-choosed {
+    color: white !important;
+    background-color: #3897db !important;
+  }
+
+  &__title {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  ul {
+    margin: 0 auto;
+    width: 300px;
+    padding: 0;
+  }
+  li {
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__attr {
+    margin: 0 auto;
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
