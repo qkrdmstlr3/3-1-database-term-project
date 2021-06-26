@@ -6,6 +6,7 @@ const { initDB } = require('./src/db/init');
 // Routes
 const bookRouter = require('./src/routes/book');
 const customerRouter = require('./src/routes/customer');
+const statisticRouter = require('./src/routes/statistic');
 
 const PORT = 3000;
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 });
 app.use('/ebook', bookRouter);
 app.use('/customer', customerRouter);
+app.use('/statistic', statisticRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
