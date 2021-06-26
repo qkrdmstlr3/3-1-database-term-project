@@ -24,10 +24,10 @@ class SidebarComponent extends ShellHTML {
   }
 
   async signinButtonClickHandler() {
-    const usernameInput = document.getElementById('sidebar__username');
+    const emailInput = document.getElementById('sidebar__username');
     const passwordInput = document.getElementById('sidebar__password');
 
-    const result = await signinCustomerAPI(usernameInput.value, passwordInput.value);
+    const result = await signinCustomerAPI(emailInput.value, passwordInput.value);
     if (result.error) {
       return window.alert(result.error);
     }
@@ -46,8 +46,8 @@ class SidebarComponent extends ShellHTML {
       <input 
         id="sidebar__username"
         class="sidebar__input"
-        placeholder="Username"
-        value="kim"
+        placeholder="Email"
+        value="kim@naver.com"
         type="text"
       />
       <input 
