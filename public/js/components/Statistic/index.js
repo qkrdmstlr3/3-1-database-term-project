@@ -1,3 +1,9 @@
+/**
+ * 파일설명
+ *
+ * 통계를 담당하는 UI 컴포넌트입니다.
+ *
+ */
 import { createComponent, ShellHTML } from '../../lib/shell-html/index.js';
 import makePieChart from '../../lib/pie-chart.js';
 import { getFirstStatistic, getSecondStatistic, getThirdStatistic } from '../../api/statistic.js';
@@ -7,6 +13,7 @@ class Statistic extends ShellHTML {
     super({ tab: 'first', first: undefined, second: undefined, third: undefined });
   }
 
+  // 탭을 바꿀 때 발생하는 이벤트
   changeTabHandler(event) {
     const className = event.target.classList[0];
     this.setState({
@@ -15,6 +22,7 @@ class Statistic extends ShellHTML {
     });
   }
 
+  // 첫번째 통계 데이터 가져오기 및 가공
   async getFirstStatisticData() {
     const data = await getFirstStatistic();
     
@@ -23,6 +31,7 @@ class Statistic extends ShellHTML {
       return acc + cur["대출 수"]
     }, 0)
 
+    // 차트에 넣을 수 있게 가공
     const result = [];
     data.forEach((item, index) => {
       if (!index) return;
@@ -41,6 +50,7 @@ class Statistic extends ShellHTML {
     })
   }
 
+  // 두번째 통계 데이터 가져오기 및 가공
   async getSecondStatisticData() {
     const data = await getSecondStatistic();
 
@@ -49,6 +59,7 @@ class Statistic extends ShellHTML {
       return acc + cur["대출 권 수"]
     }, 0)
 
+    // 차트에 넣을 수 있게 가공
     const result = [];
     data.forEach((item, index) => {
       if (!index) return;
@@ -74,6 +85,7 @@ class Statistic extends ShellHTML {
     })
   }
 
+  // 세번째 통계 데이터 가져오기
   async getThirdStatisticData() {
     const data = await getThirdStatistic();
 
@@ -83,6 +95,7 @@ class Statistic extends ShellHTML {
     })
   }
 
+  // 첫 번째 통계 html 가져오기
   getFirstStatisticHTML() {
     if (!this.state.first) {
       this.getFirstStatisticData();
@@ -96,6 +109,7 @@ class Statistic extends ShellHTML {
     `;
   }
 
+  // 두 번째 통계 html 가져오기
   getSecondStatisticHTML() {
     if (!this.state.second) {
       this.getSecondStatisticData();
@@ -109,6 +123,7 @@ class Statistic extends ShellHTML {
     `;
   }
 
+  // 세 번째 통계 html 가져오기
   getThirdStatisticHTML() {
     if (!this.state.third) {
       this.getThirdStatisticData();
@@ -135,6 +150,7 @@ class Statistic extends ShellHTML {
     `;
   }
 
+  // 렌더링할 html코드를 반환합니다. evetFuncs는 해당 클래스에 등록할 이벤트와 타입을 지정합니다.
   render() {
     return {
       html: `

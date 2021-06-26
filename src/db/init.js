@@ -1,6 +1,11 @@
+/**
+ * 파일 설명
+ * oracledb와 연동해서 sql문 수행 후 결과를 반환하는 모듈입니다.
+ */
 const oracledb = require('oracledb');
-oracledb.autoCommit = true;
+oracledb.autoCommit = true; // update, insert, delete문을 commit하기 위함
 
+// config정보로 db와 연결
 const config = {
   user: 'd201602002',
   password: '0000',
@@ -16,6 +21,7 @@ function initDB(query, condition = []) {
               rej(err.message);
           }
           if (result) {
+            // 성공 시 sql로 수행된 결과를 반환, data는 tuple들이, attr은 속성정보가 들어있다
             res({ data: result.rows, attr: result.metaData }); 
           }
           rej('error');

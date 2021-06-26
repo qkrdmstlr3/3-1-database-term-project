@@ -1,3 +1,10 @@
+/**
+ * 파일설명
+ *
+ * 메인화면에서 마이페이지를 담당하는 UI 컴포넌트입니다.
+ * useGlobalState는 lib/state.js의 전역상태 값을 가져옵니다.
+ * this.state는 이 컴포넌트의 자체 상태를 의미하며 this.setState사용시 상태를 변경하고 변경된 상태를 이용해서 컴포넌트를 리렌더링합니다.
+ */
 import { ShellHTML, createComponent, useGlobalState } from '../../lib/shell-html/index.js';
 import { getRentedBooksAPI, getReservedBooksAPI, returnBook, cancelReservedBook, extendExtBook } from '../../api/book.js';
 
@@ -6,6 +13,7 @@ class MypageComponent extends ShellHTML {
     super({ tab: 'rent', rentedBooks: undefined, reservedBooks: undefined });
   }
 
+  // 대여 / 예약 탭을 바꾸고자 할 때 발생하는 이벤트
   changeTabHandler(event) {
     const className = event.target.classList[0];
     this.setState({
@@ -14,6 +22,7 @@ class MypageComponent extends ShellHTML {
     });
   }
 
+  // 책을 반납하고자 할 때 발생하는 이벤트
   async returnBookHandler(event) {
     const check = window.confirm("정말 반납하시겠습니까?");
     if (!check) { return; }
@@ -28,6 +37,7 @@ class MypageComponent extends ShellHTML {
     }
   }
 
+  // this.state의 rentedbook정보를 업데이트한다. (반납된 도서 제거)
   updateRentedBooks(isbn) {
     const newBook = this.state.rentedBooks.filter((book) => {
       if (`${book.isbn}` === isbn) {
@@ -41,6 +51,7 @@ class MypageComponent extends ShellHTML {
     });
   }
 
+  // 예약된 책을 취고하고자 할 때 발생하는 이벤트
   async cancelReservedBookHandler(event) {
     const check = window.confirm("정말 취소하시겠습니까?");
     if (!check) { return; }
@@ -54,6 +65,7 @@ class MypageComponent extends ShellHTML {
     }
   }
 
+  // this.state의 reservedbook정보를 업데이트한다. (예약된 도서 제거)
   updateReservedBooks(isbn) {
     const newBook = this.state.reservedBooks.filter((book) => {
       if (`${book.isbn}` === isbn) {
@@ -67,6 +79,7 @@ class MypageComponent extends ShellHTML {
     });
   }
 
+  // 대여 기간을 연장할 때 발생하는 함수
   async extendExtBookHandler(event) {
     const check = window.confirm("정말 연장하시겠습니까?");
     if (!check) { return; }
@@ -80,6 +93,7 @@ class MypageComponent extends ShellHTML {
     this.updateRentedBooksExtTime(isbn);
   }
 
+  // this.state의 rentedbook정보를 업데이트한다. (연장된 도서 변경)
   updateRentedBooksExtTime(isbn) {
     const newBooks = this.state.rentedBooks.map((book) => {
       if(`${book.isbn}` !== isbn) {
@@ -95,6 +109,7 @@ class MypageComponent extends ShellHTML {
     })
   }
 
+  // 빌린 도서를 가져오는 함수
   async getRentedBooks() {
     const { cno } = useGlobalState('customer');
     const rentedBooks = await getRentedBooksAPI(cno);
@@ -105,6 +120,7 @@ class MypageComponent extends ShellHTML {
     });
   }
 
+  // 예약한 도서를 가져오는 함수
   async getReservedBooks() {
     const { cno } = useGlobalState('customer');
     const reservedBooks = await getReservedBooksAPI(cno);
@@ -115,6 +131,7 @@ class MypageComponent extends ShellHTML {
     });
   }
 
+  // 대여 탭일 때 보여지는 html
   getRentHTML() {
     if (!this.state.rentedBooks) {
       this.getRentedBooks();
@@ -148,6 +165,7 @@ class MypageComponent extends ShellHTML {
     );
   }
 
+  // 예약 탭일 때 보여지는 html
   getReservation() {
     if (!this.state.reservedBooks) {
       this.getReservedBooks();
@@ -176,6 +194,7 @@ class MypageComponent extends ShellHTML {
     );
   }
 
+  // 렌더링할 html코드를 반환합니다. evetFuncs는 해당 클래스에 등록할 이벤트와 타입을 지정합니다.
   render() {
     const isRentTab = this.state.tab === 'rent';
 

@@ -1,3 +1,9 @@
+/**
+ * 파일 설명
+ * 클라이언트에서 받은 request에서 필요한 정보를 추출해서 service 함수에게 넘겨줍니다.
+ * req.query는 querystring의 정보를 req.params는 controller에서 사용하는 :id등의 정보를 가져올 수 있습니다.
+ * service함수에서 반환된 값을 적당한 status와 함께 클라이언트로 돌려줍니다.
+ */
 const bookService = require('../service/book');
 const control = require('../utils/controller');
 
